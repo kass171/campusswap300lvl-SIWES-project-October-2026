@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusSwap - Trade Skills, Not Cash</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">Campus<span>Swap</span> 🎓</div>
+        <div class="nav-links">
+            <a href="index.html" class="active">Home</a>
+            <a href="browse.html">Browse Skills</a>
+            <a href="create.html">Join</a>
+            <a href="trust.html">Trust & Safety</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="badge">✅ Free forever · Built for UNIBEN students</div>
+        <h1>I teach you <span class="highlight">Excel</span>,<br>you teach me <span class="highlight">video editing</span>.</h1>
+        <p>Zero naira. Pure skill. Swap what you know with classmates who know what you don't.</p>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="What do you want to learn?">
+            <button onclick="searchSkills()">Search</button>
+        </div>
+        <div class="stats">
+            <div><b id="totalUsers">0</b><small>Students</small></div>
+            <div><b id="totalSwaps">0</b><small>Swaps done</small></div>
+            <div><b>4.9★</b><small>Avg rating</small></div>
+        </div>
+    </section>
+
+    <section class="how-it-works">
+        <h2>How it works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="num">1</div>
+                <h3>List your skill</h3>
+                <p>What can you teach? Excel? Public speaking? Python?</p>
+            </div>
+            <div class="step">
+                <div class="num">2</div>
+                <h3>Find a match</h3>
+                <p>Someone on campus wants exactly what you have.</p>
+            </div>
+            <div class="step">
+                <div class="num">3</div>
+                <h3>Swap & learn</h3>
+                <p>Meet at the library. Trade skills. Both win.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="featured">
+        <h2>🔥 Trending swaps this week</h2>
+        <div id="featuredGrid" class="grid">
+            <!-- Filled by JavaScript -->
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+    <script>
+        // Load featured profiles
+        async function loadFeatured() {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .order('rating', { ascending: false })
+                .limit(4);
+            
+            if (error) {
+                console.log('Error:', error);
+                document.getElementById('featuredGrid').innerHTML = 
+                    '<p style="text-align:center;color:#666;">No profiles yet. Be the first to join!</p>';
+                return;
+            }
+            
+            displayProfiles(data, 'featuredGrid');
+        }
+        
+        loadFeatured();
+        
+        function searchSkills() {
+            const q = document.getElementById('searchInput').value;
+            localStorage.setItem('searchQuery', q);
+            window.location.href = 'browse.html';
+        }
+    </script>
+</body>
+</html>
