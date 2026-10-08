@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join CampusSwap</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">Campus<span>Swap</span> 🎓</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="browse.html">Browse Skills</a>
+            <a href="create.html" class="active">Join</a>
+            <a href="trust.html">Trust & Safety</a>
+        </div>
+    </nav>
+
+    <section class="form-page">
+        <h1>Join CampusSwap</h1>
+        <p class="subtitle">Create your swap profile. Free forever.</p>
+        
+        <form id="profileForm" class="profile-form">
+            <div class="form-group">
+                <label>Your name</label>
+                <input type="text" id="name" required placeholder="e.g. Chiamaka Obi">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Level</label>
+                    <select id="level" required>
+                        <option value="">Select</option>
+                        <option>100L</option>
+                        <option>200L</option>
+                        <option>300L</option>
+                        <option>400L</option>
+                        <option>500L</option>
+                        <option>Postgraduate</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Department</label>
+                    <input type="text" id="department" required placeholder="e.g. Accounting">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>🎓 I can teach... (comma-separated)</label>
+                <input type="text" id="teach" required placeholder="e.g. Excel, Public speaking, Python">
+            </div>
+            
+            <div class="form-group">
+                <label>🔄 I want to learn... (comma-separated)</label>
+                <input type="text" id="learn" required placeholder="e.g. Video editing, Graphic design">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>WhatsApp number</label>
+                    <input type="tel" id="whatsapp" required placeholder="0803 000 0000">
+                </div>
+                <div class="form-group">
+                    <label>Campus area</label>
+                    <select id="location" required>
+                        <option value="">Select</option>
+                        <option>Ugbowo</option>
+                        <option>Ekenwan</option>
+                        <option>BDPA</option>
+                        <option>Osasogie</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Preferred meetup spot</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="meetup" value="Library" checked> 📚 Library</label>
+                    <label><input type="radio" name="meetup" value="SUB"> ☕ SUB</label>
+                    <label><input type="radio" name="meetup" value="Online"> 💻 Online</label>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-primary btn-full">Create Profile →</button>
+            <p class="form-note">By joining, you agree to our safety rules. Never pay for a swap.</p>
+        </form>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+    <script>
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const profile = {
+                name: document.getElementById('name').value,
+                level: document.getElementById('level').value,
+                department: document.getElementById('department').value,
+                teach_skills: document.getElementById('teach').value,
+                learn_skills: document.getElementById('learn').value,
+                whatsapp: document.getElementById('whatsapp').value,
+                location: document.getElementById('location').value,
+                meetup: document.querySelector('input[name="meetup"]:checked').value,
+                badge: '🥉 Bronze',
+                swaps_count: 0,
+                rating: 5.0
+            };
+            
+            const { data, error } = await supabase
+                .from('profiles')
+                .insert([profile])
+                .select();
+            
+            if (error) {
+                alert('Error creating profile: ' + error.message);
+                return;
+            }
+            
+            // Save my profile ID so I can propose swaps
+            localStorage.setItem('myProfileId', data[0].id);
+            
+            alert('Profile created! Welcome to CampusSwap, ' + profile.name.split(' ')[0] + '!');
+            window.location.href = 'browse.html';
+        });
+    </script>
+</body>
+</html>
