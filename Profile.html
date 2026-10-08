@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - CampusSwap</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">Campus<span>Swap</span> 🎓</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="browse.html">Browse Skills</a>
+            <a href="create.html">Join</a>
+            <a href="trust.html">Trust & Safety</a>
+        </div>
+    </nav>
+
+    <div id="profileDetail" class="profile-detail">
+        <!-- Filled by JavaScript -->
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+    <script>
+        async function loadProfile() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const profileId = urlParams.get('id');
+            
+            if (!profileId) {
+                window.location.href = 'browse.html';
+                return;
+            }
+            
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', profileId)
+                .single();
+            
+            if (error || !data) {
+                document.getElementById('profileDetail').innerHTML = 
+                    '<p style="text-align:center;padding:50px;">Profile not found.</p>';
+                return;
+            }
+            
+            const badge = getBadge(data.swaps_count);
+            
+            document.getElementById('profileDetail').innerHTML = `
+                <div class="profile-card">
+                    <div class="profile-avatar">${data.name.charAt(0)}</div>
+                    <h1>${data.name}</h1>
+                    <p class="profile-meta">${data.level} · ${data.department} · ${data.location}</p>
+                    <span class="badge-large">${badge.icon} ${badge.name}</span>
+                </div>
+                
+                <div class="skill-section teach">
+                    <h3>📊 Teaches</h3>
+                    <div class="skill-tags">${formatSkills(data.teach_skills)}</div>
+                </div>
+                
+                <div class="skill-section want">
+                    <h3>🔄 Wants to learn</h3>
+                    <div class="skill-tags">${formatSkills(data.learn_skills)}</div>
+                </div>
+                
+                <div class="profile-stats">
+                    <div><b>${data.swaps_count}</b><small>Swaps done</small></div>
+                    <div><b>${data.rating}★</b><small>Rating</small></div>
+                    <div><b>${badge.name}</b><small>Badge</small></div>
+                </div>
+                
+                <div class="contact-box">
+                    <p>📱 WhatsApp: <b>${data.whatsapp}</b></p>
+                    <p style="font-size:14px;color:#666;margin-top:10px;">
+                        ⚠️ Meet in public campus spaces only. Never pay money for a swap.
+                    </p>
+                </div>
+                
+                <button class="btn-primary" onclick="proposeSwap('${data.id}', '${data.name}')">
+                    🤝 Propose a Swap
+                </button>
+            `;
+        }
+        
+        function proposeSwap(receiverId, receiverName) {
+            const myProfile = localStorage.getItem('myProfileId');
+            if (!myProfile) {
+                alert('Please create your profile first!');
+                window.location.href = 'create.html';
+                return;
+            }
+            
+            const message = prompt(`What will you teach ${receiverName} in return for learning from them?`);
+            if (!message) return;
+            
+            // Save swap request to database
+            supabase.from('swaps').insert({
+                proposer_id: myProfile,
+                receiver_id: receiverId,
+                message: message,
+                status: 'pending'
+            }).then(({error}) => {
+                if (error) {
+                    alert('Error sending request. Try again.');
+                } else {
+                    alert(`Swap request sent to ${receiverName}! They'll contact you on WhatsApp.`);
+                }
+            });
+        }
+        
+        loadProfile();
+    </script>
+</body>
+</html>
