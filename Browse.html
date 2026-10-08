@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Skills - CampusSwap</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">Campus<span>Swap</span> 🎓</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="browse.html" class="active">Browse Skills</a>
+            <a href="create.html">Join</a>
+            <a href="trust.html">Trust & Safety</a>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <h1>Browse Skills</h1>
+        <p>Find your perfect swap partner</p>
+    </section>
+
+    <div class="filters">
+        <button class="filter-btn active" onclick="filterSkills('all')">All</button>
+        <button class="filter-btn" onclick="filterSkills('Excel')">📊 Excel</button>
+        <button class="filter-btn" onclick="filterSkills('Video')">🎬 Video</button>
+        <button class="filter-btn" onclick="filterSkills('Speaking')">🗣️ Speaking</button>
+        <button class="filter-btn" onclick="filterSkills('Design')">🎨 Design</button>
+        <button class="filter-btn" onclick="filterSkills('Coding')">💻 Coding</button>
+    </div>
+
+    <div id="resultsInfo" class="results-info"></div>
+    <div id="profilesGrid" class="grid"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+    <script>
+        let allProfiles = [];
+        
+        async function loadProfiles() {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .order('created_at', { ascending: false });
+            
+            if (error) {
+                console.log('Error:', error);
+                return;
+            }
+            
+            allProfiles = data;
+            
+            // Check if there's a search query from home
+            const searchQuery = localStorage.getItem('searchQuery');
+            if (searchQuery) {
+                document.getElementById('searchInput').value = searchQuery;
+                filterBySearch(searchQuery);
+                localStorage.removeItem('searchQuery');
+            } else {
+                displayProfiles(allProfiles, 'profilesGrid');
+                updateResultsCount(allProfiles.length);
+            }
+        }
+        
+        function filterSkills(skill) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (skill === 'all') {
+                displayProfiles(allProfiles, 'profilesGrid');
+                updateResultsCount(allProfiles.length);
+            } else {
+                const filtered = allProfiles.filter(p => 
+                    p.teach_skills.toLowerCase().includes(skill.toLowerCase())
+                );
+                displayProfiles(filtered, 'profilesGrid');
+                updateResultsCount(filtered.length);
+            }
+        }
+        
+        function filterBySearch(query) {
+            const filtered = allProfiles.filter(p => 
+                p.teach_skills.toLowerCase().includes(query.toLowerCase()) ||
+                p.name.toLowerCase().includes(query.toLowerCase())
+            );
+            displayProfiles(filtered, 'profilesGrid');
+            updateResultsCount(filtered.length);
+        }
+        
+        function updateResultsCount(count) {
+            document.getElementById('resultsInfo').textContent = 
+                `${count} student${count !== 1 ? 's' : ''} ready to swap`;
+        }
+        
+        loadProfiles();
+    </script>
+</body>
+</html>
