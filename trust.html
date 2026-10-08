@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trust & Safety - CampusSwap</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">Campus<span>Swap</span> 🎓</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="browse.html">Browse Skills</a>
+            <a href="create.html">Join</a>
+            <a href="trust.html" class="active">Trust & Safety</a>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <h1>Trust & Safety</h1>
+        <p>How we keep swaps fair and safe</p>
+    </section>
+
+    <section class="how-it-works">
+        <h2>How a swap works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="num">1</div>
+                <h3>Propose</h3>
+                <p>Send a swap request explaining what you'll teach in return.</p>
+            </div>
+            <div class="step">
+                <div class="num">2</div>
+                <h3>Meet safely</h3>
+                <p>Public campus spots only — library, SUB, faculty common room.</p>
+            </div>
+            <div class="step">
+                <div class="num">3</div>
+                <h3>Rate & badge</h3>
+                <p>After the swap, both sides rate each other. Earn badges.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="badges-section">
+        <h2>Trust badges</h2>
+        <div class="badges-grid">
+            <div class="badge-card">
+                <span class="badge-icon">🥉</span>
+                <h3>Bronze</h3>
+                <p>3+ swaps completed</p>
+            </div>
+            <div class="badge-card">
+                <span class="badge-icon">🥈</span>
+                <h3>Silver</h3>
+                <p>10+ swaps completed</p>
+            </div>
+            <div class="badge-card">
+                <span class="badge-icon">🥇</span>
+                <h3>Gold</h3>
+                <p>25+ swaps completed</p>
+            </div>
+            <div class="badge-card">
+                <span class="badge-icon">💎</span>
+                <h3>Platinum</h3>
+                <p>50+ swaps completed</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="safety-rules">
+        <h2>⚠️ Safety rules</h2>
+        <ul>
+            <li>Never pay money for a swap — it's always free</li>
+            <li>Meet in public campus spaces only</li>
+            <li>Report no-shows or bad actors — we ban quickly</li>
+            <li>Your number stays private until you accept a swap</li>
+            <li>If it feels wrong, don't do it. Trust your gut.</li>
+        </ul>
+    </section>
+
+    <section class="report-section">
+        <h2>See something wrong?</h2>
+        <p>Report a user who broke the rules. We investigate within 24 hours.</p>
+        <button class="btn-danger" onclick="reportUser()">🚨 Report a user</button>
+    </section>
+
+    <script>
+        function reportUser() {
+            const reason = prompt('What happened? (e.g. "Asked for money", "Didn\'t show up")');
+            if (reason) {
+                alert('Report received. Our team will investigate within 24 hours. Thank you for keeping CampusSwap safe.');
+            }
+        }
+    </script>
+</body>
+</html>
